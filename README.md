@@ -9,7 +9,7 @@ Example Playbook
 playbook.yml
 
 ```
-- name: add database password to 1pass
+- name: add items to 1pass
   hosts: localhost
   gather_facts: false
   vars:
