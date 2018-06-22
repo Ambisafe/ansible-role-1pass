@@ -4,44 +4,37 @@
   template:
     src: "{{ one_pass_template }}.yml.j2"
     dest: "{{ one_pass_data_dir }}/{{ one_pass_template }}.yml"
+  when: "one_pass_template != 'document'"
 
 - name: Get template
   set_fact:
     one_pass_template_src: "{{ lookup('file', one_pass_data_dir + '/' + one_pass_template + '.yml') | from_yaml }}"
+  when: "one_pass_template != 'document'"
 
 - name: "Save json from template"
   copy:
     content: "{{ one_pass_template_src | to_json }}"
     dest: "{{ one_pass_data_dir }}/{{ one_pass_template }}.json"
+  when: "one_pass_template != 'document'"
 
 - name: Login one_pass
   shell: "op signin {{ one_pass_signinaddress }} {{ one_pass_emailaddress }} {{ one_pass_secretkey }} {{ one_pass_master_password }} --output=raw"
   register: op_session
 
-- name: "Display session_id"
-  debug:
-    msg: "{{ op_session.stdout }}"
-
 - name: "Encode json"
   shell: "cat {{ one_pass_data_dir }}/{{ one_pass_template }}.json | op encode --session={{ op_session.stdout }}"
+  when: "one_pass_template != 'document'"
   register: op_encode_item
-
-- name: "Show vaults"
-  shell: "op list vaults --session={{ op_session.stdout }}"
-  register: op_vaults
-
-- name: "Display vaults"
-  debug:
-    msg: "{{ op_vaults.stdout }}"
 
 - name: "Create item to one_passs"
   shell: "op create item '{{ one_pass_template | title | replace('_', ' ') }}' {{ op_encode_item.stdout }} --title='{{ one_pass_title }}' --vault='{{ one_pass_vault }}' --session={{ op_session.stdout }}"
   register: op_create_item
+  when: "one_pass_template != 'document'"
   tags: create
 
-- name: "Display uuid create item"
-  debug:
-    msg: "{{ op_create_item.stdout }}"
+- name: "Create document to one_pass"
+  shell: "op create document {{ document_path }} --title='{{ one_pass_title }}' --vault='{{ one_pass_vault }}' --session={{ op_session.stdout }}"
+  when: "one_pass_template == 'document'"
   tags: create
 
 - name: Logout one_pass

@@ -50,6 +50,12 @@ playbook.yml
             one_pass_template: "secure_note"
             one_pass_title: "Note [test]"
             secure_note_plain: "test_note"
+      - include_role:
+            name: ansible-role-1pass
+        vars:
+            one_pass_template: "document"
+            one_pass_title: "Document test"
+            document_path: "~/testfile"
 ```
 
 Author Information
