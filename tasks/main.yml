@@ -1,0 +1,49 @@
+---
+# tasks file for ansible-role-one_pass
+- name: Create template
+  template:
+    src: "{{ one_pass_template }}.yml.j2"
+    dest: "{{ one_pass_data_dir }}/{{ one_pass_template }}.yml"
+
+- name: Get template
+  set_fact:
+    one_pass_template_src: "{{ lookup('file', one_pass_data_dir + '/' + one_pass_template + '.yml') | from_yaml }}"
+
+- name: "Save json from template"
+  copy:
+    content: "{{ one_pass_template_src | to_json }}"
+    dest: "{{ one_pass_data_dir }}/{{ one_pass_template }}.json"
+
+- name: Login one_pass
+  shell: "op signin {{ one_pass_signinaddress }} {{ one_pass_emailaddress }} {{ one_pass_secretkey }} {{ one_pass_master_password }} --output=raw"
+  register: op_session
+
+- name: "Display session_id"
+  debug:
+    msg: "{{ op_session.stdout }}"
+
+- name: "Encode json"
+  shell: "cat {{ one_pass_data_dir }}/{{ one_pass_template }}.json | op encode --session={{ op_session.stdout }}"
+  register: op_encode_item
+
+- name: "Show vaults"
+  shell: "op list vaults --session={{ op_session.stdout }}"
+  register: op_vaults
+
+- name: "Display vaults"
+  debug:
+    msg: "{{ op_vaults.stdout }}"
+
+- name: "Create item to one_passs"
+  shell: "op create item '{{ one_pass_template | title | replace('_', ' ') }}' {{ op_encode_item.stdout }} --title='{{ one_pass_title }}' --vault='{{ one_pass_vault }}' --session={{ op_session.stdout }}"
+  register: op_create_item
+  tags: create
+
+- name: "Display uuid create item"
+  debug:
+    msg: "{{ op_create_item.stdout }}"
+  tags: create
+
+- name: Logout one_pass
+  shell: "op signout --session={{ op_session.stdout }}"
+

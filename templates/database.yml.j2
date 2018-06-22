@@ -1,0 +1,50 @@
+notesPlain: "{{ database_notes_plain }}"
+sections:
+  - fields:
+          -
+            "k": "menu"
+            "n": "database_type"
+            "t": "type"
+            "v": "{{ database_type }}"
+          -
+            "k": "string"
+            "n": "hostname"
+            "t": "server"
+            "v": "{{ database_hostname }}"
+          -
+            "k": "string"
+            "n": "port"
+            "t": "port"
+            "v": "{{ database_port }}"
+          -
+            "k": "string"
+            "n": "database"
+            "t": "database"
+            "v": "{{ database_name }}"
+          -
+            "k": "string"
+            "n": "username"
+            "t": "username"
+            "v": "{{ database_username }}"
+          -
+            "k": "concealed"
+            "n": "password"
+            "t": "password"
+            "v": "{{ database_password }}"
+          -
+            "k": "string"
+            "n": "sid"
+            "t": "SID"
+            "v": "{{ database_sid }}"
+          -
+            "k": "string"
+            "n": "alias"
+            "t": "alias"
+            "v": "{{ database_alias }}"
+          -
+            "k": "string"
+            "n": "options"
+            "t": "connection options"
+            "v": "{{ database_options }}"
+    name: "{{ database_section_name }}"
+    title: "{{ database_section_title }}"

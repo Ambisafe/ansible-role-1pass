@@ -1,0 +1,16 @@
+---
+# defaults file for ansible-role-1pass
+
+#templates : database
+database_notes_plain: ""
+database_type: ""
+database_hostname: ""
+database_port: ""
+database_name: ""
+database_username: ""
+database_password: ""
+database_sid: ""
+database_alias: ""
+database_options: ""
+database_section_name: ""
+database_section_title: ""
