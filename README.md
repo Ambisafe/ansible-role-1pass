@@ -1,7 +1,10 @@
 Creating items using the 1Password command-line tool and ansible
 =========
 
-Creating items using the 1Password command-line tool and ansible
+Requirements
+----------------
+
+Set up the 1pass command-line tool : https://support.1password.com/command-line-getting-started/
 
 Example Playbook
 ----------------
